@@ -55,8 +55,9 @@ podTemplate(label: 'mypod', containers: [
 //                             withCredentials([string(credentialsId: 'sonar-qube-access-token', variable: 'SONAR_TOKEN')]) {
                                withSonarQubeEnv('SonarQube-on-MiniKube') {
                                 sh 'whoami'
+                                sh 'ls -la'
                                 sh 'hostname -i'
-                                sh 'sonar-scanner'
+                                sh 'sonar-scanner -Dsonar.projectKey=bmi-calculator'
                             }
                         }
                     }
