@@ -26,11 +26,11 @@ environment {
 
 podTemplate(label: 'mypod', containers: [
                 containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
-        //         containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', envVars: [
-        //             envVar(key: 'SONAR_HOST_URL', value: 'sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'),
-        //             envVar(key: 'SONAR_LOGIN', value: credentials('sonar-qube-access-token'))
-        //         ], command: 'cat', ttyEnabled: true),
-                containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', command: 'cat', ttyEnabled: true),
+                containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', envVars: [
+                    envVar(key: 'SONAR_HOST_URL', value: 'sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'),
+//                     envVar(key: 'SONAR_LOGIN', value: credentials('sonar-qube-access-token'))
+                ], command: 'cat', ttyEnabled: true),
+//                 containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
               ],
               volumes: [
@@ -57,10 +57,12 @@ podTemplate(label: 'mypod', containers: [
 
                     stage("Quality Gate") {
                         container('sonar-cli') {
-                            withCredentials([string(credentialsId: 'sonar-qube-access-token', variable: 'SONAR_TOKEN')]) {
+//                             withCredentials([string(credentialsId: 'sonar-qube-access-token', variable: 'SONAR_TOKEN')]) {
+                               withSonarQubeEnv('SonarQube-on-MiniKube') {
                                 sh 'whoami'
                                 sh 'hostname -i'
-                                sh 'echo $SONAR_TOKEN'
+                                sh 'echo SONAR_HOST_URL'
+                                sh 'echo SONAR_LOGIN'
                                 sh 'sonar-scanner'
                             }
                         }
