@@ -19,11 +19,6 @@
 //     }
 // }
 
-environment {
-    SONAR_LOGIN = credentials('sonar-qube-access-token')
-    SONAR_HOST_URL = 'sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'
-}
-
 podTemplate(label: 'mypod', containers: [
                 containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
                 containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', envVars: [
@@ -43,7 +38,7 @@ podTemplate(label: 'mypod', containers: [
                             // example to show you can run docker commands when you mount the socket
                             sh 'hostname'
                             sh 'hostname -i'
-                            sh 'docker ps'
+//                             sh 'docker ps'
                         }
                     }
 
@@ -55,15 +50,22 @@ podTemplate(label: 'mypod', containers: [
                         }
                     }
 
-                    stage("Quality Gate") {
+                    stage("Quality Analysis") {
                         container('sonar-cli') {
 //                             withCredentials([string(credentialsId: 'sonar-qube-access-token', variable: 'SONAR_TOKEN')]) {
                                withSonarQubeEnv('SonarQube-on-MiniKube') {
                                 sh 'whoami'
                                 sh 'hostname -i'
-                                sh 'echo SONAR_HOST_URL'
-                                sh 'echo SONAR_LOGIN'
                                 sh 'sonar-scanner'
+                            }
+                        }
+                    }
+
+                    stage("Quality Gate"){
+                        timeout(time: 2, unit: 'MINUTES') {
+                            def qg = waitForQualityGate()
+                            if (qg.status != 'OK') {
+                              error "Pipeline aborted due to quality gate failure: ${qg.status}"
                             }
                         }
                     }
