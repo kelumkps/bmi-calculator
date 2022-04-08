@@ -29,7 +29,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                     sh 'whoami'
                     sh 'ls -la'
                     sh 'hostname -i'
-                    sh 'sonar-scanner -Dsonar.projectKey=bmi-calculator'
+                    sh 'sonar-scanner -Dsonar.projectBaseDir=./bmi-calculator'
                 }
             }
         }
