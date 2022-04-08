@@ -1,7 +1,6 @@
 pipeline {
     agent {
         docker {
-            label 'sonar-scanner-cli-docker'
             image 'sonarsource/sonar-scanner-cli:latest'
         }
     }
