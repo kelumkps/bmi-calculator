@@ -1,20 +1,8 @@
 podTemplate(label: 'bmi-calculator-build-pod', containers: [
         containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', command: 'cat', ttyEnabled: true),
-//         containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
-    ]/* ,
-    volumes: [
-        hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
-    ] */) {
+    ]) {
     node('bmi-calculator-build-pod') {
-//         stage('Check running containers') {
-//             container('docker') {
-//                 // example to show you can run docker commands when you mount the socket
-//                 sh 'hostname'
-//                 sh 'hostname -i'
-//             }
-//         }
-
         stage('Clone repository') {
             container('git') {
                 sh 'whoami'
