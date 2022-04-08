@@ -1,3 +1,4 @@
+/*
 podTemplate(label: 'bmi-calculator-build-pod', containers: [
         containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', command: 'cat', ttyEnabled: true),
@@ -29,6 +30,26 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 if (qg.status != 'OK') {
                   error "Pipeline aborted due to quality gate failure: ${qg.status}"
                 }
+            }
+        }
+    }
+} */
+
+pipeline {
+    agent any
+    stages {
+        stage('SCA') {
+            agent {
+                docker {
+                    image 'sonarsource/sonar-scanner-cli:latest'
+                }
+            }
+            steps {
+                echo "Steps to execute SCA"
+                withSonarQubeEnv(installationName: 'SonarQube', credentialsId: 'sonar-qube-access-token') {
+                    sh 'sonar-scanner -Dsonar.projectVersion=1.0 -Dsonar.projectKey=bmi-calculator -Dsonar.sources=src'
+                }
+                waitForQualityGate(abortPipeline: true, credentialsId: 'sonar-qube-access-token')
             }
         }
     }
