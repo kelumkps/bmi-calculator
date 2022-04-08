@@ -15,24 +15,22 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
 //             }
 //         }
 
-//         stage('Clone repository') {
-//             container('git') {
-//                 sh 'whoami'
-//                 sh 'hostname -i'
-//                 sh 'git clone -b master https://github.com/kelumkps/bmi-calculator.git'
-//             }
-//         }
+        stage('Clone repository') {
+            container('git') {
+                sh 'whoami'
+                sh 'hostname -i'
+                sh 'git clone -b master https://github.com/kelumkps/bmi-calculator.git'
+            }
+        }
 
         stage("Quality Analysis") {
             container('sonar-cli') {
                    withSonarQubeEnv('SonarQube-on-MiniKube') {
                     sh 'whoami'
+                    sh 'hostname -i'
                     sh 'ls -la'
                     sh 'pwd'
-                    sh 'ls -la ../'
-                    sh 'hostname -i'
-                    sh 'sonar-scanner -Dsonar.projectKey=bmi-calculator'
-//                     sh 'sonar-scanner -Dsonar.projectBaseDir=./bmi-calculator'
+                    sh 'sonar-scanner -Dsonar.projectBaseDir=./bmi-calculator'
                 }
             }
         }
