@@ -16,6 +16,7 @@
 // }
 
 pipeline {
+    agent any
     environment {
         SONAR_LOGIN = credentials('sonar-qube-access-token')
         SONAR_HOST_URL = 'sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'
