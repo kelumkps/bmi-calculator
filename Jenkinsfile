@@ -14,11 +14,11 @@
 //         }
 //     }
 // }
-//
+
 
 podTemplate(label: 'mypod', containers: [
     containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
-    containerTemplate(name: 'maven', image: 'maven:3.3.9-jdk-8-alpine', command: 'cat', ttyEnabled: true),
+    containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', command: 'cat', ttyEnabled: true),
     containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
   ],
   volumes: [
@@ -35,20 +35,18 @@ podTemplate(label: 'mypod', containers: [
             }
         }
 
-        stage('Clone repository') {
-            container('git') {
-                sh 'whoami'
-                sh 'hostname -i'
-                sh 'git clone -b master https://github.com/lvthillo/hello-world-war.git'
-            }
-        }
+    //         stage('Clone repository') {
+    //             container('git') {
+    //                 sh 'whoami'
+    //                 sh 'hostname -i'
+    //                 sh 'git clone -b master https://github.com/lvthillo/hello-world-war.git'
+    //             }
+    //         }
 
-        stage('Maven Build') {
-            container('maven') {
-                dir('hello-world-war/') {
-                    sh 'hostname'
-                    sh 'hostname -i'
-                    sh 'mvn clean install'
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate(abortPipeline: true, credentialsId: 'sonar-qube-access-token')
                 }
             }
         }
