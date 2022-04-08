@@ -21,9 +21,7 @@ podTemplate(label: 'mypod', containers: [
     containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', envVars: [
         envVar(key: 'SONAR_HOST_URL', value: 'sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'),
         envVar(key: 'SONAR_LOGIN', value: credentials('sonar-qube-access-token'))
-    ]),
-    command: 'cat', ttyEnabled: true
-    ),
+    ], command: 'cat', ttyEnabled: true),
 //     containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', command: 'cat', ttyEnabled: true),
     containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
   ],
