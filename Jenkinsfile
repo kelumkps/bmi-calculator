@@ -57,7 +57,7 @@ podTemplate(label: 'mypod', containers: [
 
                     stage("Quality Gate") {
                         container('sonar-cli') {
-                            withCredentials([string(credentialsId: 'my-secret', variable: 'SONAR_TOKEN')]) {
+                            withCredentials([string(credentialsId: 'sonar-qube-access-token', variable: 'SONAR_TOKEN')]) {
                                 sh 'whoami'
                                 sh 'hostname -i'
                                 sh 'echo $SONAR_TOKEN'
