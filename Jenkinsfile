@@ -15,13 +15,13 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
 //             }
 //         }
 
-        stage('Clone repository') {
-            container('git') {
-                sh 'whoami'
-                sh 'hostname -i'
-                sh 'git clone -b master https://github.com/kelumkps/bmi-calculator.git'
-            }
-        }
+//         stage('Clone repository') {
+//             container('git') {
+//                 sh 'whoami'
+//                 sh 'hostname -i'
+//                 sh 'git clone -b master https://github.com/kelumkps/bmi-calculator.git'
+//             }
+//         }
 
         stage("Quality Analysis") {
             container('sonar-cli') {
