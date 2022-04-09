@@ -15,16 +15,13 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
 
         stage("Quality Analysis") {
             container('sonar-cli') {
-                   withSonarQubeEnv('SonarQube-on-MiniKube') {
+                withSonarQubeEnv('SonarQube-on-MiniKube') {
                     sh 'hostname -i'
                     sh 'ls -la'
                     sh 'pwd'
                     sh 'sonar-scanner -Dsonar.projectBaseDir=./bmi-calculator'
                 }
             }
-        }
-
-        stage("Quality Gate"){
             timeout(time: 30, unit: 'MINUTES') {
                 def qg = waitForQualityGate()
                 if (qg.status != 'OK') {
@@ -32,6 +29,15 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 }
             }
         }
+
+//         stage("Quality Gate") {
+//             timeout(time: 30, unit: 'MINUTES') {
+//                 def qg = waitForQualityGate()
+//                 if (qg.status != 'OK') {
+//                   error "Pipeline aborted due to quality gate failure: ${qg.status}"
+//                 }
+//             }
+//         }
 
         stage('Build') {
             container('node-alpine') {
@@ -45,21 +51,20 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
         }
 
         stage('Test') {
-            steps {
-                container('node-alpine') {
-                    sh 'hostname -i'
-                    sh 'node --version'
-                    sh 'pwd'
-                    sh 'ls -la'
-                    sh 'cd ./bmi-calculator; npm test -- --coverage --watchAll=false'
-                    sh 'ls -la ./bmi-calculator'
-                    sh 'ls -la ./bmi-calculator/coverage'
-                }
+            container('node-alpine') {
+                sh 'hostname -i'
+                sh 'node --version'
+                sh 'pwd'
+                sh 'ls -la'
+                sh 'cd ./bmi-calculator; npm test -- --coverage --watchAll=false'
+                sh 'ls -la ./bmi-calculator'
+                sh 'ls -la ./bmi-calculator/coverage'
+            }
 //             cobertura {
 //                 coberturaReportFile './bmi-calculator/coverage/cobertura-coverage.xml'
 //             }
-                step([$class: 'CoberturaPublisher', coberturaReportFile: './bmi-calculator/coverage/cobertura-coverage.xml', enableNewApi: true, lineCoverageTargets: '80, 60, 70'])
-            }
+//                 step([$class: 'CoberturaPublisher', coberturaReportFile: './bmi-calculator/coverage/cobertura-coverage.xml', enableNewApi: true, lineCoverageTargets: '80, 60, 70'])
+            cobertura coberturaReportFile: 'coverage.xml', enableNewApi: true, lineCoverageTargets: '80, 60, 70'
         }
     }
 }
