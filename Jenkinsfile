@@ -39,7 +39,9 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'node --version'
                 sh 'pwd'
                 sh 'ls -la'
-                sh 'npm install --prefix ./bmi-calculator'
+                sh 'cd ./bmi-calculator; pwd'
+                sh 'ls -la'
+                sh 'npm install'
             }
         }
     }
