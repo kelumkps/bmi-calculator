@@ -9,7 +9,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
             container('git') {
                 sh 'whoami'
                 sh 'hostname -i'
-                sh 'git clone -b master https://github.com/kelumkps/bmi-calculator.git'
+                sh 'git clone -b master https://github.com/kelumkps/bmi-calculator.git .'
             }
         }
 
@@ -19,7 +19,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'node --version'
                 sh 'pwd'
                 sh 'ls -la'
-                sh 'npm install --prefix ./bmi-calculator'
+                sh 'npm install '
             }
         }
 
@@ -29,9 +29,9 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'node --version'
                 sh 'pwd'
                 sh 'ls -la'
-                sh 'cd ./bmi-calculator; npm test -- --coverage --watchAll=false'
+                sh 'npm test -- --coverage --watchAll=false'
             }
-            cobertura coberturaReportFile: 'bmi-calculator/coverage/cobertura-coverage.xml', enableNewApi: true, lineCoverageTargets: '50, 50, 50'
+            cobertura coberturaReportFile: 'coverage/cobertura-coverage.xml', enableNewApi: true, lineCoverageTargets: '50, 50, 50'
         }
 
         stage("Quality Analysis") {
@@ -40,7 +40,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                     sh 'hostname -i'
                     sh 'ls -la'
                     sh 'pwd'
-                    sh 'sonar-scanner -Dsonar.projectBaseDir=./bmi-calculator'
+                    sh 'sonar-scanner'
                 }
             }
             timeout(time: 30, unit: 'MINUTES') {
