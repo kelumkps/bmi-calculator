@@ -33,7 +33,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
             }
         }
 
-        stage('npm install') {
+        stage('Build') {
             container('node-alpine') {
                 sh 'hostname -i'
                 sh 'node --version'
@@ -41,6 +41,18 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'ls -la'
                 //sh 'cd ./bmi-calculator; npm install'
                 sh 'npm install --prefix ./bmi-calculator'
+            }
+        }
+
+        stage('Test') {
+            container('node-alpine') {
+                sh 'hostname -i'
+                sh 'node --version'
+                sh 'pwd'
+                sh 'ls -la'
+                sh 'cd ./bmi-calculator; npm test -- --coverage --watchAll=false'
+                sh 'ls -la ./bmi-calculator'
+                sh 'ls -la ./bmi-calculator/coverage'
             }
         }
     }
