@@ -2,6 +2,7 @@
 podTemplate(label: 'bmi-calculator-build-pod', containers: [
         containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', command: 'cat', ttyEnabled: true),
+        containerTemplate(name: 'node-alpine', image: 'node:16.13.1-alpine', command: 'cat', ttyEnabled: true)
     ]) {
     node('bmi-calculator-build-pod') {
         stage('Clone repository') {
@@ -30,6 +31,17 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 if (qg.status != 'OK') {
                   error "Pipeline aborted due to quality gate failure: ${qg.status}"
                 }
+            }
+        }
+
+        stage('npm install') {
+            container('node-alpine') {
+                sh 'whoami'
+                sh 'hostname -i'
+                sh 'node --version'
+                sh 'ls -la'
+                sh 'cd bmi-calculator'
+                sh 'npm install'
             }
         }
     }
