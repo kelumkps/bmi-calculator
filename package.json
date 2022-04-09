@@ -30,7 +30,7 @@
       "src/**/*.{js,jsx}",
       "!src/index.js"
     ],
-    "coverageReporters": ["html", "cobertura"]
+    "coverageReporters": ["html", "cobertura", "lcov"]
   },
   "eslintConfig": {
     "extends": "react-app"

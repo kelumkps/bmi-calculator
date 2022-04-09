@@ -13,6 +13,27 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
             }
         }
 
+        stage('Build') {
+            container('node-alpine') {
+                sh 'hostname -i'
+                sh 'node --version'
+                sh 'pwd'
+                sh 'ls -la'
+                sh 'npm install'
+            }
+        }
+
+        stage('Test') {
+            container('node-alpine') {
+                sh 'hostname -i'
+                sh 'node --version'
+                sh 'pwd'
+                sh 'ls -la'
+                sh 'npm test -- --coverage --watchAll=false'
+            }
+            cobertura coberturaReportFile: 'coverage/cobertura-coverage.xml', enableNewApi: true, lineCoverageTargets: '50, 50, 50'
+        }
+
         stage("Quality Analysis") {
             container('sonar-cli') {
                 withSonarQubeEnv('SonarQube-on-MiniKube') {
@@ -28,28 +49,6 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                   error "Pipeline aborted due to quality gate failure: ${qg.status}"
                 }
             }
-        }
-
-        stage('Build') {
-            container('node-alpine') {
-                sh 'hostname -i'
-                sh 'node --version'
-                sh 'pwd'
-                sh 'ls -la'
-                //sh 'cd ./bmi-calculator; npm install'
-                sh 'npm install'
-            }
-        }
-
-        stage('Test') {
-            container('node-alpine') {
-                sh 'hostname -i'
-                sh 'node --version'
-                sh 'pwd'
-                sh 'ls -la'
-                sh 'npm test -- --coverage --watchAll=false'
-            }
-            cobertura coberturaReportFile: 'coverage/cobertura-coverage.xml', enableNewApi: true, lineCoverageTargets: '50, 50, 50'
         }
     }
 }
