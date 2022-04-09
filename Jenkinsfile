@@ -5,7 +5,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
         containerTemplate(name: 'node-alpine', image: 'node:16.13.1-alpine', command: 'cat', ttyEnabled: true)
     ]) {
     node('bmi-calculator-build-pod') {
-        stage('Clone repository') {
+        stage('Clone Repository') {
             container('git') {
                 sh 'whoami'
                 sh 'hostname -i'
@@ -13,7 +13,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
             }
         }
 
-        stage('Build') {
+        stage('Install Dependencies') {
             container('node-alpine') {
                 sh 'hostname -i'
                 sh 'node --version'
