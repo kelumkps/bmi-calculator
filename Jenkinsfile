@@ -1,4 +1,4 @@
-/*
+
 podTemplate(label: 'bmi-calculator-build-pod', containers: [
         containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', command: 'cat', ttyEnabled: true),
@@ -33,8 +33,9 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
             }
         }
     }
-} */
+}
 
+/*
 pipeline {
     agent any
     stages {
@@ -53,4 +54,4 @@ pipeline {
             }
         }
     }
-}
+} */
