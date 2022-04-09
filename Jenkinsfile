@@ -54,10 +54,8 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'ls -la ./bmi-calculator'
                 sh 'ls -la ./bmi-calculator/coverage'
             }
-            post {
-                always {
-                    junit './bmi-calculator/coverage/cobertura-coverage.xml'
-                }
+            cobertura {
+                coberturaReportFile './bmi-calculator/coverage/cobertura-coverage.xml'
             }
         }
     }
