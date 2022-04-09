@@ -16,7 +16,6 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
         stage("Quality Analysis") {
             container('sonar-cli') {
                    withSonarQubeEnv('SonarQube-on-MiniKube') {
-                    sh 'whoami'
                     sh 'hostname -i'
                     sh 'ls -la'
                     sh 'pwd'
@@ -36,11 +35,13 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
 
         stage('npm install') {
             container('node-alpine') {
-                sh 'whoami'
                 sh 'hostname -i'
                 sh 'node --version'
+                sh 'pwd'
                 sh 'ls -la'
                 sh 'cd bmi-calculator'
+                sh 'ls -la'
+                sh 'pwd'
                 sh 'npm install'
             }
         }
