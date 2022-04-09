@@ -45,17 +45,20 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
         }
 
         stage('Test') {
-            container('node-alpine') {
-                sh 'hostname -i'
-                sh 'node --version'
-                sh 'pwd'
-                sh 'ls -la'
-                sh 'cd ./bmi-calculator; npm test -- --coverage --watchAll=false'
-                sh 'ls -la ./bmi-calculator'
-                sh 'ls -la ./bmi-calculator/coverage'
-            }
-            cobertura {
-                coberturaReportFile './bmi-calculator/coverage/cobertura-coverage.xml'
+            steps {
+                container('node-alpine') {
+                    sh 'hostname -i'
+                    sh 'node --version'
+                    sh 'pwd'
+                    sh 'ls -la'
+                    sh 'cd ./bmi-calculator; npm test -- --coverage --watchAll=false'
+                    sh 'ls -la ./bmi-calculator'
+                    sh 'ls -la ./bmi-calculator/coverage'
+                }
+//             cobertura {
+//                 coberturaReportFile './bmi-calculator/coverage/cobertura-coverage.xml'
+//             }
+                step([$class: 'CoberturaPublisher', coberturaReportFile: './bmi-calculator/coverage/cobertura-coverage.xml', enableNewApi: true, lineCoverageTargets: '80, 60, 70'])
             }
         }
     }
