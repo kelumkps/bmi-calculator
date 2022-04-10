@@ -31,7 +31,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'ls -la'
                 sh 'cd ./bmi-calculator; npm test -- --coverage --watchAll=false'
             }
-            cobertura coberturaReportFile: 'bmi-calculator/coverage/cobertura-coverage.xml', enableNewApi: true, lineCoverageTargets: '50, 50, 50'
+            cobertura coberturaReportFile: 'bmi-calculator/coverage/cobertura-coverage.xml', enableNewApi: true, lineCoverageTargets: '50, 50, 50', conditionalCoverageTargets: '70, 0, 0', methodCoverageTargets: '80, 0, 0'
         }
 
         stage("Quality Analysis") {
