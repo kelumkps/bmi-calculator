@@ -50,5 +50,16 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 }
             }
         }
+
+        stage('Build') {
+            container('node-alpine') {
+                sh 'hostname -i'
+                sh 'node --version'
+                sh 'pwd'
+                sh 'ls -la'
+                sh 'cd ./bmi-calculator; npm run build'
+            }
+            slackSend channel: '#general', color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
+        }
     }
 }
