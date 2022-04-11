@@ -59,7 +59,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'ls -la'
                 sh 'cd ./bmi-calculator; npm run build'
             }
-            slackSend channel: '#general', color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
+            slackSend channel: 'C12345679', color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} built successfully."
         }
     }
 }
