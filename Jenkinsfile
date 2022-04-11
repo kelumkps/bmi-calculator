@@ -32,6 +32,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'cd ./bmi-calculator; npm test -- --coverage --watchAll=false'
             }
             cobertura coberturaReportFile: 'bmi-calculator/coverage/cobertura-coverage.xml', enableNewApi: true, lineCoverageTargets: '50, 50, 50', conditionalCoverageTargets: '60, 0, 0', methodCoverageTargets: '60, 0, 0'
+            archiveArtifacts artifacts: 'bmi-calculator/coverage/cobertura-coverage.xml', fingerprint: true
         }
 
         stage("Quality Analysis") {
@@ -60,7 +61,6 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'cd ./bmi-calculator; npm run build'
             }
             zip zipFile: 'build.zip', archive: true, dir: 'bmi-calculator/build'
-            archiveArtifacts artifacts: 'build.zip', fingerprint: true
             slackSend channel: 'C12345679', color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} built successfully."
         }
     }
