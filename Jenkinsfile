@@ -77,16 +77,16 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
             unzip zipFile: 'build.zip', dir: 'build'
             container('docker') {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh 'docker ps'
                     sh 'ls -la'
                     sh 'ls -la build'
                     sh 'echo $BUILD_NUMBER'
-                    sh 'echo $USERNAME'
+                    sh 'docker --version'
                     sh 'docker login -u $USERNAME -p $PASSWORD'
                     sh 'docker build --tag bmi-calculator:$BUILD_NUMBER ./build'
                     sh 'docker tag bmi-calculator:$BUILD_NUMBER docker.io/kelumkps/bmi-calculator:latest'
                     sh 'docker tag bmi-calculator:$BUILD_NUMBER docker.io/kelumkps/bmi-calculator:$BUILD_NUMBER'
                     sh 'docker push -a docker.io/kelumkps/bmi-calculator'
+                    sh 'docker logout'
                 }
             }
         }
