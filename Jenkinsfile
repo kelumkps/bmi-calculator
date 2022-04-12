@@ -3,6 +3,10 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
         containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', command: 'cat', ttyEnabled: true),
         containerTemplate(name: 'node-alpine', image: 'node:16.13.1-alpine', command: 'cat', ttyEnabled: true)
+        containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
+    ],
+    volumes: [
+        hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
     ]) {
     node('bmi-calculator-build-pod') {
         stage('Clone Repository') {
@@ -70,7 +74,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
 
         stage('Docker Image') {
             unstash name: 'builtArtifacts'
-            unzip zipFile: 'build.zip'
+            unzip zipFile: 'build.zip', dir: "build"
             def customImage = docker.build("bmi-calculator:${env.BUILD_ID}", "./build")
             customImage.push()
             customImage.push('latest')
