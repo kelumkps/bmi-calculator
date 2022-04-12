@@ -59,13 +59,16 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'pwd'
                 sh 'ls -la'
                 sh 'cd ./bmi-calculator; npm run build'
-                sh 'ls -la ./bmi-calculator'
-                sh 'ls -la ./bmi-calculator/Dockerfile'
             }
             zip zipFile: 'build.zip', archive: true, dir: 'bmi-calculator/build'
             archiveArtifacts artifacts: 'build.zip', fingerprint: true
             stash name: 'builtArtifacts', includes: 'build.zip', allowEmpty: false
-            stash name: 'dockerFile', includes: './bmi-calculator/Dockerfile', allowEmpty: false
+            pwd
+            sh 'ls -la'
+            sh 'ls -la bmi-calculator'
+            sh 'ls -la bmi-calculator/Dockerfile'
+            sh 'ls -la ./bmi-calculator/Dockerfile'
+            stash name: 'dockerFile', includes: 'bmi-calculator/Dockerfile', allowEmpty: false
             slackSend channel: 'C12345679', color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} built successfully."
         }
 
