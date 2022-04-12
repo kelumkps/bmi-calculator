@@ -81,7 +81,6 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'ls -la build'
                 sh 'echo $BUILD_NUMBER'
                 sh 'echo $BUILD_ID'
-                sh 'echo ${env.BUILD_ID}'
                 sh 'docker build --tag bmi-calculator:$BUILD_NUMBER ./build'
                 sh 'docker tag bmi-calculator:$BUILD_NUMBER docker.io/kelumkps/bmi-calculator:latest'
                 sh 'docker tag bmi-calculator:$BUILD_NUMBER docker.io/kelumkps/bmi-calculator:$BUILD_NUMBER'
