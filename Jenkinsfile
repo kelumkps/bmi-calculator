@@ -75,11 +75,18 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
         stage('Docker Image') {
             unstash name: 'builtArtifacts'
             unzip zipFile: 'build.zip', dir: "build"
-            sh 'ls -la'
-            sh 'ls -la build'
-            def customImage = docker.build("bmi-calculator:${env.BUILD_ID}", "./build")
-            customImage.push()
-            customImage.push('latest')
+            container('docker') {
+                sh 'docker ps'
+                sh 'ls -la'
+                sh 'ls -la build'
+                sh 'echo $BUILD_NUMBER'
+                sh 'echo $BUILD_ID'
+                sh 'echo ${env.BUILD_ID}'
+                sh 'docker build --tag bmi-calculator:$BUILD_NUMBER ./build'
+                sh 'docker tag bmi-calculator:$BUILD_NUMBER docker.io/kelumkps/bmi-calculator:latest'
+                sh 'docker tag bmi-calculator:$BUILD_NUMBER docker.io/kelumkps/bmi-calculator:$BUILD_NUMBER'
+                sh 'docker push -a docker.io/kelumkps/bmi-calculator'
+            }
         }
     }
 }
