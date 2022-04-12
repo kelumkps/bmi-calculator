@@ -59,23 +59,19 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'pwd'
                 sh 'ls -la'
                 sh 'cd ./bmi-calculator; npm run build'
+                sh 'cp ./bmi-calculator/Dockerfile ./bmi-calculator/build'
+                sh 'ls -la ./bmi-calculator/build'
             }
             zip zipFile: 'build.zip', archive: true, dir: 'bmi-calculator/build'
             archiveArtifacts artifacts: 'build.zip', fingerprint: true
             stash name: 'builtArtifacts', includes: 'build.zip', allowEmpty: false
-            stash name: 'dockerFile', includes: 'bmi-calculator/Dockerfile', allowEmpty: false
             slackSend channel: 'C12345679', color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} built successfully."
         }
 
         stage('Docker Image') {
-            sh 'pwd'
-            sh 'ls -la'
             unstash name: 'builtArtifacts'
-            sh 'ls -la'
-            unstash name: 'dockerFile'
-            sh 'ls -la'
-            sh 'ls -la build'
-            def customImage = docker.build("bmi-calculator:${env.BUILD_ID}")
+            unzip zipFile: 'build.zip'
+            def customImage = docker.build("bmi-calculator:${env.BUILD_ID}", "./build")
             customImage.push()
             customImage.push('latest')
         }
