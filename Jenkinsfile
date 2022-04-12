@@ -96,7 +96,8 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
         stage('Docker Scan') {
             container('trivy') {
                 sh 'hostname -i'
-                sh 'trivy image -f json -o results.json kelumkps/bmi-calculator:$BUILD_NUMBER'
+                sh 'trivy image -f json -o results.json kelumkps/bmi-calculator:latest'
+//                 sh 'trivy image -f json -o results.json kelumkps/bmi-calculator:$BUILD_NUMBER'
                 recordIssues(tools: [trivy(pattern: 'results.json')])
             }
         }
