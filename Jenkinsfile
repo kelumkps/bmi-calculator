@@ -39,7 +39,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
             archiveArtifacts artifacts: 'bmi-calculator/coverage/cobertura-coverage.xml', fingerprint: true
         }
 
-        stage("Quality Analysis") {
+        stage('Quality Analysis') {
             container('sonar-cli') {
                 withSonarQubeEnv('SonarQube-on-MiniKube') {
                     sh 'hostname -i'
@@ -51,7 +51,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
             timeout(time: 30, unit: 'MINUTES') {
                 def qg = waitForQualityGate()
                 if (qg.status != 'OK') {
-                  error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                  error 'Pipeline aborted due to quality gate failure: ${qg.status}'
                 }
             }
         }
@@ -69,27 +69,26 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
             zip zipFile: 'build.zip', archive: true, dir: 'bmi-calculator/build'
             archiveArtifacts artifacts: 'build.zip', fingerprint: true
             stash name: 'builtArtifacts', includes: 'build.zip', allowEmpty: false
-            slackSend channel: 'C12345679', color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} built successfully."
+            slackSend channel: 'C12345679', color: 'good', message: 'The pipeline ${currentBuild.fullDisplayName} built successfully.'
         }
 
         stage('Docker Image') {
             unstash name: 'builtArtifacts'
-            unzip zipFile: 'build.zip', dir: "build"
-            def customImage = docker.build("bmi-calculator:${env.BUILD_ID}", "./build")
-            customImage.push()
-            customImage.push('latest')
-//             container('docker') {
-//                 withRegistry() {
-//                     sh 'docker ps'
-//                     sh 'ls -la'
-//                     sh 'ls -la build'
-//                     sh 'echo $BUILD_NUMBER'
-//                     sh 'docker build --tag bmi-calculator:$BUILD_NUMBER ./build'
-//                     sh 'docker tag bmi-calculator:$BUILD_NUMBER docker.io/kelumkps/bmi-calculator:latest'
-//                     sh 'docker tag bmi-calculator:$BUILD_NUMBER docker.io/kelumkps/bmi-calculator:$BUILD_NUMBER'
-//                     sh 'docker push -a docker.io/kelumkps/bmi-calculator'
-//                 }
-//             }
+            unzip zipFile: 'build.zip', dir: 'build'
+            container('docker') {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh 'docker ps'
+                    sh 'ls -la'
+                    sh 'ls -la build'
+                    sh 'echo $BUILD_NUMBER'
+                    sh 'echo $USERNAME'
+                    sh 'docker login -u $USERNAME -p $PASSWORD'
+                    sh 'docker build --tag bmi-calculator:$BUILD_NUMBER ./build'
+                    sh 'docker tag bmi-calculator:$BUILD_NUMBER docker.io/kelumkps/bmi-calculator:latest'
+                    sh 'docker tag bmi-calculator:$BUILD_NUMBER docker.io/kelumkps/bmi-calculator:$BUILD_NUMBER'
+                    sh 'docker push -a docker.io/kelumkps/bmi-calculator'
+                }
+            }
         }
     }
 }
