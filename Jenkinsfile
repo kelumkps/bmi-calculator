@@ -77,7 +77,6 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
             unzip zipFile: 'build.zip', dir: "build"
             sh 'ls -la'
             sh 'ls -la build'
-            sh 'docker ps'
             def customImage = docker.build("bmi-calculator:${env.BUILD_ID}", "./build")
             customImage.push()
             customImage.push('latest')
