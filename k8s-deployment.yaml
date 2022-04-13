@@ -4,6 +4,7 @@ metadata:
   labels:
     app: bmi-calc
   name: react-bmi-calculator
+  namespace: react-bmi
 spec:
   replicas: 1
   selector:
@@ -28,6 +29,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: react-bmi-calculator
+  namespace: react-bmi
 spec:
   selector:
     app: bmi-calc
