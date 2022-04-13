@@ -118,6 +118,9 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
         stage('Performance Test') {
             container('blazemeter') {
                 sh 'hostname -i'
+                timeout(time: 10, unit: 'MINUTES') {
+                    input message: 'Execute Performance Tests?'
+                }
                 sh 'bzt bmi-calculator/taurus-performance-test.yaml'
                 sh 'ls -la'
                 perfReport 'react-bmi-calculator-perf-test.xml'
