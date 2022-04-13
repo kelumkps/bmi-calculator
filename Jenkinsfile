@@ -120,8 +120,7 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
                 sh 'hostname -i'
                 sh 'bzt bmi-calculator/taurus-performance-test.yaml'
                 sh 'ls -la'
-                sh 'ls -la /tmp/artifacts'
-                perfReport '/tmp/artifacts/react-bmi-calculator-perf-test.xml'
+                perfReport 'react-bmi-calculator-perf-test.xml'
             }
         }
     }
