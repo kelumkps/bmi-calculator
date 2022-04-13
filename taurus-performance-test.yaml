@@ -1,0 +1,20 @@
+execution:
+  - concurrency: 100
+    ramp-up: 1m
+    hold-for: 5m
+    scenario: react-bmi-calculator-test
+
+scenarios:
+  quick-test:
+    requests:
+      - http://react-bmi-calculator.react-bmi.svc.local
+
+reporting:
+  - module: final-stats
+    summary: true  # overall samples count and percent of failures
+    percentiles: true  # display average times and percentiles
+    summary-labels: true # provides list of sample labels, status, percentage of completed, avg time and errors
+    failed-labels: true  # provides list of sample labels with failures
+    test-duration: true  # provides test duration
+    dump-xml: react-bmi-calculator-perf-test.xml
+    dump-csv: react-bmi-calculator-perf-test.csv
