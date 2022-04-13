@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: bmi-calc
+  name: react-bmi-calculator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bmi-calc
+  strategy: { }
+  template:
+    metadata:
+      labels:
+        app: bmi-calc
+    spec:
+      containers:
+        - image: docker.io/kelumkps/bmi-calculator:latest
+          name: react-bmi-calculator
+          resources: { }
+          ports:
+            - containerPort: 80
+              name: web-port
+status: { }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-bmi-calculator
+spec:
+  selector:
+    app: bmi-calc
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: web-port

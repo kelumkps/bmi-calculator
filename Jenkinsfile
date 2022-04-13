@@ -105,10 +105,11 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
         stage('Deploy') {
             container('kubectl') {
                 withKubeConfig([credentialsId: 'minikube-k8s-token', serverUrl: 'https://kubernetes.default.svc.cluster.local']) {
-                    sh 'echo $KUBECONFIG'
                     sh 'hostname -i'
                     sh 'kubectl version'
-                    sh 'kubectl get pods -A'
+                    sh 'ls -la'
+                    sh 'ls -la bmi-calculator'
+                    sh 'kubectl apply -f bmi-calculator/k8s-deployment.yaml'
                 }
             }
         }
