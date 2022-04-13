@@ -2,7 +2,7 @@ execution:
   - concurrency: 100
     ramp-up: 1m
     hold-for: 5m
-    scenario: react-bmi-calculator-test
+    scenario: quick-test
 
 scenarios:
   quick-test:
