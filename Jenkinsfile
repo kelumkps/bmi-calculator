@@ -4,7 +4,8 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
         containerTemplate(name: 'sonar-cli', image: 'sonarsource/sonar-scanner-cli:latest', command: 'cat', ttyEnabled: true),
         containerTemplate(name: 'node-alpine', image: 'node:16.13.1-alpine', command: 'cat', ttyEnabled: true),
         containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
-        containerTemplate(name: 'trivy', image: 'aquasec/trivy:latest', command: 'cat', ttyEnabled: true)
+        containerTemplate(name: 'trivy', image: 'aquasec/trivy:latest', command: 'cat', ttyEnabled: true),
+        containerTemplate(name: 'kubectl', image: 'bitnami/kubectl:latest', command: 'cat', ttyEnabled: true)
     ],
     volumes: [
         hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
@@ -100,12 +101,15 @@ podTemplate(label: 'bmi-calculator-build-pod', containers: [
 //                 recordIssues(tools: [trivy(pattern: 'results.json')])
 //             }
 //         }
-            stage('Deploy') {
+
+        stage('Deploy') {
+            container('kubectl') {
                 withKubeConfig([credentialsId: 'minikube-k8s-token', serverUrl: 'https://kubernetes.default.svc.cluster.local']) {
-                  sh 'echo $KUBECONFIG'
-                  sh 'ls -la $KUBECONFIG'
-                  sh 'cat $KUBECONFIG'
+                    sh 'hostname -i'
+                    sh 'kubectl version'
+                    sh 'kubectl get pods -A'
                 }
             }
+        }
     }
 }
